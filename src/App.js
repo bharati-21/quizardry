@@ -1,8 +1,11 @@
-import "./App.css";
+import { WebsiteRoutes } from "WebsiteRoutes";
+import "./styles/App.css";
 
 function App() {
     return (
-        <div>Hello</div>
+        <div>
+            <WebsiteRoutes />
+        </div>
     );
 }
 
