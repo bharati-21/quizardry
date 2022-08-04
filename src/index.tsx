@@ -1,11 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { ThemeProvider } from "@mui/material";
 import { BrowserRouter as Router } from "react-router-dom";
 
-import { theme } from "./theme";
-import "./index.css";
+import "./styles/index.css";
 import App from "./App";
+import { ToastPortal } from "ToastPortal";
+import { ThemeProvider } from "contexts";
 
 const root = ReactDOM.createRoot(
 	document.getElementById("root") as HTMLElement
@@ -13,8 +13,9 @@ const root = ReactDOM.createRoot(
 root.render(
 	<React.StrictMode>
 		<Router>
-			<ThemeProvider theme={theme}>
+			<ThemeProvider>
 				<App />
+				<ToastPortal />
 			</ThemeProvider>
 		</Router>
 	</React.StrictMode>
