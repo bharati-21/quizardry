@@ -1,11 +1,7 @@
-import { Route, Routes } from "react-router-dom";
+import { Routes } from "react-router-dom";
 
 const ProtectedRoutes = () => {
-	return (
-		<Routes>
-			
-		</Routes>
-	);
+	return <Routes></Routes>;
 };
 
 export { ProtectedRoutes };
