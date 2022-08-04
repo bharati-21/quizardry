@@ -18,6 +18,7 @@ import { useStyles } from "styles/useStyles";
 import { isSignupDataValid } from "utils";
 import { signupService } from "services";
 import toast from "react-hot-toast";
+import { constants } from "appConstants";
 
 const Signup = () => {
 	const { primaryLink, logoText } = useStyles();
@@ -38,6 +39,8 @@ const Signup = () => {
 	});
 
 	const [showPassword, setShowPassword] = useState(false);
+
+	const { LIGHT } = constants;
 
 	const handleSubmit = async (event: React.SyntheticEvent) => {
 		event.preventDefault();
@@ -109,7 +112,7 @@ const Signup = () => {
 					backgroundImage: `url(${timerImage})`,
 					backgroundRepeat: "no-repeat",
 					backgroundColor: (t) =>
-						t.palette.mode === "light"
+						t.palette.mode === LIGHT
 							? t.palette.grey[50]
 							: t.palette.grey[900],
 					backgroundSize: "cover",

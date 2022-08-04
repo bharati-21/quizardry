@@ -11,17 +11,19 @@ import { DarkMode, LightMode } from "@mui/icons-material";
 import { useStyles } from "styles/useStyles";
 import { Link } from "react-router-dom";
 import { useTheme } from "contexts";
+import { constants } from "appConstants";
 
 const Navbar = () => {
 	const { mode, setMode } = useTheme();
 	const { logoText } = useStyles();
+	const { LIGHT } = constants;
 
 	return (
 		<Box sx={{ flexGrow: 1 }}>
 			<AppBar
 				position="static"
 				sx={{
-					backgroundColor: mode === "light" ? "#FFF" : "#0D1230",
+					backgroundColor: mode === LIGHT ? "#FFF" : "#0D1230",
 					boxShadow: "none",
 					color: "inherit",
 				}}
@@ -49,14 +51,14 @@ const Navbar = () => {
 							<IconButton
 								sx={{ color: "unset" }}
 								onClick={() => {
-									if (mode === "light") {
+									if (mode === LIGHT) {
 										setMode("dark");
 									} else {
 										setMode("light");
 									}
 								}}
 							>
-								{mode === "light" ? (
+								{mode === LIGHT ? (
 									<DarkMode sx={{ fontSize: 30 }} />
 								) : (
 									<LightMode sx={{ fontSize: 30 }} />
