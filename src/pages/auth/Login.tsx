@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	Typography,
 	Button,
@@ -10,17 +10,25 @@ import {
 	InputAdornment,
 	IconButton,
 } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, To, useNavigate } from "react-router-dom";
 
 import { useStyles } from "styles/useStyles";
 import { isSignupDataValid } from "utils";
 import { loginService } from "services";
 import toast from "react-hot-toast";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useAuth } from "contexts";
 
 const Login = () => {
 	const { primaryLink, logoText } = useStyles();
 	const navigate = useNavigate();
+	const { setAuth, isAuth } = useAuth();
+
+	useEffect(() => {
+		if (isAuth) {
+			navigate(-1 as To, { replace: true });
+		}
+	}, [isAuth, navigate]);
 
 	const [formData, setFormData] = useState({
 		email: "",
@@ -41,9 +49,19 @@ const Login = () => {
 			return;
 		}
 		try {
-			await loginService(formData);
+			const {
+				data: {
+					user: { token, ...otherUserDetails },
+				},
+			} = await loginService(formData);
+			console.log(token, otherUserDetails);
+			setAuth({
+				token,
+				authUser: otherUserDetails,
+				isAuth: true,
+			});
 			toast.success("Login successful!");
-			navigate("/");
+			navigate("/", { replace: true });
 		} catch (error: any) {
 			const status = error?.response?.status;
 			if (status === 401) {

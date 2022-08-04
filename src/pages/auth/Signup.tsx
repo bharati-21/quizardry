@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	Typography,
 	Button,
@@ -11,7 +11,7 @@ import {
 	InputAdornment,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, To, useNavigate } from "react-router-dom";
 
 import timerImage from "images/sand_timer.jpg";
 import { useStyles } from "styles/useStyles";
@@ -19,10 +19,12 @@ import { isSignupDataValid } from "utils";
 import { signupService } from "services";
 import toast from "react-hot-toast";
 import { constants } from "appConstants";
+import { useAuth } from "contexts";
 
 const Signup = () => {
 	const { primaryLink, logoText } = useStyles();
 	const navigate = useNavigate();
+	const { isAuth } = useAuth();
 
 	const [formData, setFormData] = useState({
 		firstName: "",
@@ -42,6 +44,12 @@ const Signup = () => {
 
 	const { LIGHT } = constants;
 
+	useEffect(() => {
+		if (isAuth) {
+			navigate(-1 as To, { replace: true });
+		}
+	}, [isAuth, navigate]);
+
 	const handleSubmit = async (event: React.SyntheticEvent) => {
 		event.preventDefault();
 
@@ -59,7 +67,7 @@ const Signup = () => {
 		try {
 			await signupService(formData);
 			toast.success("Sign up successful!");
-			navigate("/login");
+			navigate("/login", { replace: true });
 		} catch (error: any) {
 			const status = error?.response?.status;
 			if (status === 409) {

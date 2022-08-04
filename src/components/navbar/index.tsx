@@ -9,14 +9,27 @@ import {
 } from "@mui/material";
 import { DarkMode, LightMode } from "@mui/icons-material";
 import { useStyles } from "styles/useStyles";
-import { Link } from "react-router-dom";
-import { useTheme } from "contexts";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth, useTheme } from "contexts";
 import { constants } from "appConstants";
 
 const Navbar = () => {
 	const { mode, setMode } = useTheme();
+	const navigate = useNavigate();
 	const { logoText } = useStyles();
 	const { LIGHT } = constants;
+	const { isAuth, setAuth } = useAuth();
+
+	const handleLoginClick = () => {
+		if (isAuth) {
+			setAuth({
+				isAuth: false,
+				authToken: null,
+				authUser: {},
+			});
+		}
+		navigate("/login");
+	};
 
 	return (
 		<Box sx={{ flexGrow: 1 }}>
@@ -43,10 +56,13 @@ const Navbar = () => {
 								alignItems: "center",
 							}}
 						>
-							<Button color="primary" variant="contained">
-								<Link to="/login" className="button-link">
-									Login
-								</Link>
+							<Button
+								color="primary"
+								variant="contained"
+								className="button-link"
+								onClick={handleLoginClick}
+							>
+								{isAuth ? "Logout" : "Login"}
 							</Button>
 							<IconButton
 								sx={{ color: "unset" }}
