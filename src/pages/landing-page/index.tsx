@@ -3,22 +3,15 @@ import { useStyles } from "styles/useStyles";
 import { Link } from "react-router-dom";
 
 import landingPageUndraw from "images/landing_page_undraw.svg";
+import { useAuth } from "contexts";
 
 const LandingPage = () => {
 	const { logoText } = useStyles();
+	const {
+		auth: { isAuth, authToken },
+	} = useAuth();
 	return (
-		<Grid
-			container
-			component="main"
-			px={2}
-			sx={{
-				minHeight: "90vh",
-				width: "100%",
-				flexDirection: "column",
-				justifyContent: "center",
-				alignItems: "center",
-			}}
-		>
+		<>
 			<CssBaseline />
 			<Grid
 				item
@@ -61,8 +54,11 @@ const LandingPage = () => {
 					variant="contained"
 					sx={{ mt: 2, mb: 3 }}
 				>
-					<Link to="/signup" className="button-link">
-						Join Now
+					<Link
+						to={isAuth && authToken ? "/home" : "/signup"}
+						className="button-link"
+					>
+						{isAuth && authToken ? "Home" : "Join Now"}
 					</Link>
 				</Button>
 			</Grid>
@@ -77,7 +73,7 @@ const LandingPage = () => {
 					width: "100%",
 				}}
 			/>
-		</Grid>
+		</>
 	);
 };
 
