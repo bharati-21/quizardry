@@ -18,7 +18,6 @@ import { loginService } from "services";
 import toast from "react-hot-toast";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useAuth } from "contexts";
-import { constants } from "appConstants";
 
 const Login = () => {
 	const { primaryLink, logoText } = useStyles();
@@ -27,7 +26,6 @@ const Login = () => {
 		setAuth,
 		auth: { isAuth },
 	} = useAuth();
-	const { UNAUTHORIZED } = constants;
 
 	useEffect(() => {
 		if (isAuth) {
@@ -47,12 +45,7 @@ const Login = () => {
 
 	const [showPassword, setShowPassword] = useState(false);
 
-	const handleSubmit = async (event: React.SyntheticEvent) => {
-		event.preventDefault();
-
-		if (!isSignupDataValid(email, password, setFormDataError)) {
-			return;
-		}
+	const callLoginService = async (formData: any) => {
 		try {
 			const {
 				data: {
@@ -74,12 +67,32 @@ const Login = () => {
 			toast.success("Login successful!");
 			navigate("/home", { replace: true });
 		} catch (error: any) {
-			const status = error?.response?.status;
-			if (status === UNAUTHORIZED) {
-				return;
-			}
+			console.log(error);
 			toast.error("Login failed. Please try again later.");
 		}
+	};
+
+	const handleSubmit = (event: React.SyntheticEvent) => {
+		event.preventDefault();
+
+		if (!isSignupDataValid(email, password, setFormDataError)) {
+			return;
+		}
+		callLoginService(formData);
+	};
+
+	const handleFillGuesDetails = async (event: React.SyntheticEvent) => {
+		event.preventDefault();
+
+		setFormDataError({
+			emailError: "",
+			passwordError: "",
+		});
+
+		await callLoginService({
+			email: process.env.REACT_APP_GUEST_EMAIL || "",
+			password: process.env.REACT_APP_GUEST_PASSWORD || "",
+		});
 	};
 
 	const handleFormDataChange = (event: React.ChangeEvent) => {
@@ -197,11 +210,20 @@ const Login = () => {
 						type="submit"
 						fullWidth
 						variant="contained"
-						sx={{ mt: 3, mb: 2 }}
+						sx={{ mt: 3 }}
 						onClick={handleSubmit}
 						disabled={isDisabled}
 					>
 						Login
+					</Button>
+					<Button
+						type="submit"
+						fullWidth
+						variant="contained"
+						sx={{ mt: 1, mb: 2 }}
+						onClick={handleFillGuesDetails}
+					>
+						Login with Guest Credentials
 					</Button>
 					<Grid container justifyContent="flex-end">
 						<Grid item>
