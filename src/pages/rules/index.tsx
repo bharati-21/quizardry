@@ -65,7 +65,7 @@ const Rules = () => {
 				variant="contained"
 				sx={{ mx: "auto", mt: 2, display: "flex" }}
 			>
-				<Link to={`/quizzes/${quizId}`} className="button-link">
+				<Link to={`/quizzes/`} className="button-link">
 					Start Quiz
 				</Link>
 			</Button>
