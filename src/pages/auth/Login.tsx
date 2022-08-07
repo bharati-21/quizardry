@@ -18,11 +18,16 @@ import { loginService } from "services";
 import toast from "react-hot-toast";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useAuth } from "contexts";
+import { constants } from "appConstants";
 
 const Login = () => {
 	const { primaryLink, logoText } = useStyles();
 	const navigate = useNavigate();
-	const { setAuth, isAuth } = useAuth();
+	const {
+		setAuth,
+		auth: { isAuth },
+	} = useAuth();
+	const { UNAUTHORIZED } = constants;
 
 	useEffect(() => {
 		if (isAuth) {
@@ -54,18 +59,23 @@ const Login = () => {
 					user: { token, ...otherUserDetails },
 				},
 			} = await loginService(formData);
-			console.log(token, otherUserDetails);
 			setAuth({
-				token,
+				authToken: token,
 				authUser: otherUserDetails,
 				isAuth: true,
 			});
+
+			localStorage.setItem("quizardry-auth-token", token);
+			localStorage.setItem(
+				"quizardry-auth-user",
+				JSON.stringify(otherUserDetails)
+			);
+
 			toast.success("Login successful!");
-			navigate("/", { replace: true });
+			navigate("/home", { replace: true });
 		} catch (error: any) {
 			const status = error?.response?.status;
-			if (status === 401) {
-				toast.error("Login failed. Invalid credentials.");
+			if (status === UNAUTHORIZED) {
 				return;
 			}
 			toast.error("Login failed. Please try again later.");
