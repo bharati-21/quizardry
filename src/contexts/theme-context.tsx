@@ -1,19 +1,11 @@
-import { createContext, ReactNode, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useMemo, useState } from "react";
 import {
 	CssBaseline,
 	PaletteMode,
 	ThemeProvider as MuiThemeProvider,
 } from "@mui/material";
 import { getAppTheme } from "themes/appTheme";
-
-type ThemeContextType = {
-	mode: string;
-	setMode: (mode: PaletteMode) => void;
-};
-
-interface Props {
-	children?: ReactNode;
-}
+import { ContextProps, ThemeContextType } from "types";
 
 const ThemeContext = createContext<ThemeContextType>({
 	mode: "light",
@@ -21,18 +13,13 @@ const ThemeContext = createContext<ThemeContextType>({
 });
 const { Provider } = ThemeContext;
 
-const ThemeProvider = ({ children }: Props) => {
+const ThemeProvider = ({ children }: ContextProps) => {
 	const [mode, setMode] = useState<PaletteMode>("light");
-
-	const value: ThemeContextType = {
-		mode,
-		setMode,
-	};
 
 	const theme = useMemo(() => getAppTheme(mode), [mode]);
 
 	return (
-		<Provider value={value}>
+		<Provider value={{ mode, setMode }}>
 			<MuiThemeProvider theme={theme}>
 				<CssBaseline enableColorScheme />
 				{children}

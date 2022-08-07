@@ -1,37 +1,52 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import {
+	createContext,
+	useCallback,
+	useContext,
+	useEffect,
+	useState,
+} from "react";
+import { useNavigate } from "react-router-dom";
 
-type AuthContextType = {
-	setAuth: (authState: any) => any;
-	isAuth: boolean;
-	authUser: any;
-	authToken: string | null;
-};
+import { AuthContextType, ContextProps, AuthState } from "types";
+import { useInterceptNetworkCall } from "hooks/useInterceptNetworkCall";
 
-interface Props {
-	children?: ReactNode;
-}
-
-const AuthContext = createContext<AuthContextType>({
-	isAuth: false,
-	authUser: {},
-	authToken: null,
-	setAuth: (authState: any) => authState,
-});
+const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 const { Provider } = AuthContext;
 
-const AuthProvider = ({ children }: Props) => {
-	const [auth, setAuth] = useState({
-		isAuth: false,
-		authUser: {},
-		authToken: null,
-	});
+const AuthProvider = ({ children }: ContextProps) => {
+	const sessionUserToken = localStorage.getItem("quizardry-auth-token");
+	const sessionUserDetails = JSON.parse(
+		localStorage.getItem("quizardry-auth-details") || "{}"
+	);
 
-	const value: AuthContextType = {
-		...auth,
-		setAuth,
+	const initialState: AuthState = {
+		isAuth: sessionUserToken ? true : false,
+		authUser: sessionUserDetails,
+		authToken: sessionUserToken ?? null,
 	};
 
-	return <Provider value={value}>{children}</Provider>;
+	const [auth, setAuth] = useState(initialState);
+	const navigate = useNavigate();
+	const { interceptNetworkCall } = useInterceptNetworkCall();
+
+	const logoutUser = useCallback(() => {
+		setAuth({
+			isAuth: false,
+			authToken: null,
+			authUser: {},
+		});
+		localStorage.removeItem("quizardry-auth-token");
+		localStorage.removeItem("quizardry-auth-user");
+		navigate("/login");
+	}, [navigate]);
+
+	useEffect(() => {
+		interceptNetworkCall(logoutUser);
+	}, [interceptNetworkCall, logoutUser]);
+
+	return (
+		<Provider value={{ auth, setAuth, logoutUser }}>{children}</Provider>
+	);
 };
 
 const useAuth = () => useContext(AuthContext);
