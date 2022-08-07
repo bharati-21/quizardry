@@ -8,6 +8,7 @@ interface PaletteOptions {
 	info: PaletteColorOptions;
 	warning: PaletteColorOptions;
 	success: PaletteColorOptions;
+	dark: PaletteColorOptions;
 }
 
 const appColors: PaletteOptions = {
@@ -47,6 +48,10 @@ const appColors: PaletteOptions = {
 		dark: "#388e3c",
 		contrastText: "#000",
 	},
+	dark: {
+		main: "#111111",
+		contrastText: "#F2F2F2",
+	},
 };
 
 const getAppTheme = (mode: PaletteMode) => {
@@ -66,5 +71,20 @@ const getAppTheme = (mode: PaletteMode) => {
 		},
 	});
 };
+
+declare module "@mui/material/styles" {
+	interface Palette {
+		dark: Palette["primary"];
+	}
+	interface PaletteOptions {
+		dark: PaletteOptions["primary"];
+	}
+}
+
+declare module "@mui/material/Button" {
+	interface ButtonPropsColorOverrides {
+		dark: true;
+	}
+}
 
 export { appColors, getAppTheme };

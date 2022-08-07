@@ -24,7 +24,9 @@ import { useAuth } from "contexts";
 const Signup = () => {
 	const { primaryLink, logoText } = useStyles();
 	const navigate = useNavigate();
-	const { isAuth } = useAuth();
+	const {
+		auth: { isAuth },
+	} = useAuth();
 
 	const [formData, setFormData] = useState({
 		firstName: "",
@@ -42,7 +44,7 @@ const Signup = () => {
 
 	const [showPassword, setShowPassword] = useState(false);
 
-	const { LIGHT } = constants;
+	const { LIGHT, EMAIL_ALREADY_IN_USE } = constants;
 
 	useEffect(() => {
 		if (isAuth) {
@@ -70,7 +72,7 @@ const Signup = () => {
 			navigate("/login", { replace: true });
 		} catch (error: any) {
 			const status = error?.response?.status;
-			if (status === 409) {
+			if (status === EMAIL_ALREADY_IN_USE) {
 				toast.error("Signup failed. Email already in use.");
 				return;
 			}

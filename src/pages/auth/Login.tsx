@@ -22,7 +22,10 @@ import { useAuth } from "contexts";
 const Login = () => {
 	const { primaryLink, logoText } = useStyles();
 	const navigate = useNavigate();
-	const { setAuth, isAuth } = useAuth();
+	const {
+		setAuth,
+		auth: { isAuth },
+	} = useAuth();
 
 	useEffect(() => {
 		if (isAuth) {
@@ -42,34 +45,53 @@ const Login = () => {
 
 	const [showPassword, setShowPassword] = useState(false);
 
-	const handleSubmit = async (event: React.SyntheticEvent) => {
-		event.preventDefault();
-
-		if (!isSignupDataValid(email, password, setFormDataError)) {
-			return;
-		}
+	const callLoginService = async (formData: any) => {
 		try {
 			const {
 				data: {
 					user: { token, ...otherUserDetails },
 				},
 			} = await loginService(formData);
-			console.log(token, otherUserDetails);
 			setAuth({
-				token,
+				authToken: token,
 				authUser: otherUserDetails,
 				isAuth: true,
 			});
+
+			localStorage.setItem("quizardry-auth-token", token);
+			localStorage.setItem(
+				"quizardry-auth-user",
+				JSON.stringify(otherUserDetails)
+			);
+
 			toast.success("Login successful!");
-			navigate("/", { replace: true });
+			navigate("/home", { replace: true });
 		} catch (error: any) {
-			const status = error?.response?.status;
-			if (status === 401) {
-				toast.error("Login failed. Invalid credentials.");
-				return;
-			}
 			toast.error("Login failed. Please try again later.");
 		}
+	};
+
+	const handleSubmit = (event: React.SyntheticEvent) => {
+		event.preventDefault();
+
+		if (!isSignupDataValid(email, password, setFormDataError)) {
+			return;
+		}
+		callLoginService(formData);
+	};
+
+	const handleFillGuesDetails = async (event: React.SyntheticEvent) => {
+		event.preventDefault();
+
+		setFormDataError({
+			emailError: "",
+			passwordError: "",
+		});
+
+		await callLoginService({
+			email: process.env.REACT_APP_GUEST_EMAIL || "",
+			password: process.env.REACT_APP_GUEST_PASSWORD || "",
+		});
 	};
 
 	const handleFormDataChange = (event: React.ChangeEvent) => {
@@ -187,11 +209,20 @@ const Login = () => {
 						type="submit"
 						fullWidth
 						variant="contained"
-						sx={{ mt: 3, mb: 2 }}
+						sx={{ mt: 3 }}
 						onClick={handleSubmit}
 						disabled={isDisabled}
 					>
 						Login
+					</Button>
+					<Button
+						type="submit"
+						fullWidth
+						variant="contained"
+						sx={{ mt: 1, mb: 2 }}
+						onClick={handleFillGuesDetails}
+					>
+						Login with Guest Credentials
 					</Button>
 					<Grid container justifyContent="flex-end">
 						<Grid item>
