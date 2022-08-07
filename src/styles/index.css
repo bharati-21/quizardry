@@ -42,3 +42,8 @@ html {
 	text-transform: capitalize;
 	font-size: 0.8rem;
 }
+
+input[name="question-option-radio-group"],
+.MuiRadio-root.MuiRadio-root {
+	display: none;
+}
