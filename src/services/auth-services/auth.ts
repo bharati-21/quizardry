@@ -1,4 +1,4 @@
-import axios from "axios";
+import { uninterceptedAxiosInstance } from "axios/axios";
 
 type signupData = {
 	firstName: string;
@@ -13,12 +13,12 @@ type loginData = {
 };
 
 const signupService = (data: signupData) =>
-	axios.post("http://localhost:5000/api/auth/signup", {
+	uninterceptedAxiosInstance.post("http://localhost:5000/api/auth/signup", {
 		data,
 	});
 
 const loginService = (data: loginData) =>
-	axios.post("http://localhost:5000/api/auth/login", {
+	uninterceptedAxiosInstance.post("http://localhost:5000/api/auth/login", {
 		data,
 	});
 
