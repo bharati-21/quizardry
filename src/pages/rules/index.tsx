@@ -10,12 +10,21 @@ import {
 	useTheme,
 } from "@mui/material";
 import { constants } from "appConstants";
+import { useQuiz } from "contexts";
 import { ChevronRight } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 
 const Rules = () => {
 	const { RULES } = constants;
 	const theme = useTheme();
+	const {
+		quizState: {
+			quizName,
+			quizId,
+			category: { categoryName },
+		},
+		quizDispatch,
+	} = useQuiz();
 
 	const mappedRules = RULES.map((rule: string) => (
 		<ListItem disableGutters alignItems="flex-start">
@@ -25,6 +34,10 @@ const Rules = () => {
 			<ListItemText primary={rule} />
 		</ListItem>
 	));
+
+	useEffect(() => {
+		quizDispatch({ type: "RESET_QUIZ_STATE" });
+	}, [quizDispatch]);
 
 	return (
 		<Box>
@@ -47,6 +60,10 @@ const Rules = () => {
 					>
 						Rules
 					</Typography>
+					<Typography
+						color={theme.palette.primary.dark}
+						variant="h6"
+					>{`${categoryName}: ${quizName}`}</Typography>
 				</Box>
 				<List
 					sx={{
@@ -65,7 +82,7 @@ const Rules = () => {
 				variant="contained"
 				sx={{ mx: "auto", mt: 2, display: "flex" }}
 			>
-				<Link to={`/quizzes/`} className="button-link">
+				<Link to={`/quizzes/${quizId}`} className="button-link">
 					Start Quiz
 				</Link>
 			</Button>
