@@ -10,7 +10,7 @@ import {
 	useTheme,
 } from "@mui/material/";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useAuth } from "contexts";
+import { useAuth, useQuiz } from "contexts";
 import { getCategoryItemsService, getQuizService } from "services";
 import toast from "react-hot-toast";
 import loader from "images/loader.svg";
@@ -28,6 +28,7 @@ const CategoryItems = () => {
 	const {
 		auth: { authToken },
 	} = useAuth();
+	const { quizDispatch } = useQuiz();
 	const navigate = useNavigate();
 	const theme = useTheme();
 	const { UNAUTHORIZED } = constants;
@@ -83,7 +84,43 @@ const CategoryItems = () => {
 			.slice(0, 3)
 			.join("");
 
-	const handleQuizSelected = async (quizId: string) => {};
+	const handleQuizSelected = async (quizId: string) => {
+		quizDispatch({
+			type: SET_LOADING_ERROR,
+			payload: {
+				quizDataLoading: true,
+				quizDataError: null,
+			},
+		});
+
+		try {
+			const {
+				data: {
+					quiz: { _id, ...otherQuizData },
+				},
+			} = await getQuizService(authToken as string, quizId);
+			quizDispatch({
+				type: SET_QUESTION_DATA,
+				payload: {
+					quizId: _id,
+					...otherQuizData,
+					quizDataLoading: false,
+					quizDataError: null,
+				},
+			});
+			navigate("/rules");
+		} catch (error: any) {
+			quizDispatch({
+				type: SET_LOADING_ERROR,
+				payload: {
+					quizDataLoading: false,
+					quizDataError:
+						"Could not fetch quiz data. Please try again later",
+				},
+			});
+			toast.error("Could not fetch quiz data. Please try again later.");
+		}
+	};
 
 	return (
 		<>
