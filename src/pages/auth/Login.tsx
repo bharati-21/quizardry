@@ -67,7 +67,6 @@ const Login = () => {
 			toast.success("Login successful!");
 			navigate("/home", { replace: true });
 		} catch (error: any) {
-			console.log(error);
 			toast.error("Login failed. Please try again later.");
 		}
 	};
