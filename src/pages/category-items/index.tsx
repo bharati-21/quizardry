@@ -12,7 +12,6 @@ import {
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuth, useQuiz } from "contexts";
 import { getCategoryItemsService, getQuizService } from "services";
-import quizardryLogo from "images/quizardry_logo.png";
 import toast from "react-hot-toast";
 import loader from "images/loader.svg";
 import { quizActionTypes } from "actionTypes";
@@ -164,7 +163,7 @@ const CategoryItems = () => {
 						>
 							{quizImgUrl ? (
 								<img
-									src={`${quizImgUrl || quizardryLogo}`}
+									src={`${quizImgUrl}`}
 									alt={quizName}
 									loading="lazy"
 								/>
