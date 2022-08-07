@@ -12,21 +12,22 @@ import { useStyles } from "styles/useStyles";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth, useTheme } from "contexts";
 import { constants } from "appConstants";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
 	const { mode, setMode } = useTheme();
 	const navigate = useNavigate();
 	const { logoText } = useStyles();
 	const { LIGHT } = constants;
-	const { isAuth, setAuth } = useAuth();
+	const {
+		auth: { isAuth, authToken },
+		logoutUser,
+	} = useAuth();
 
 	const handleLoginClick = () => {
 		if (isAuth) {
-			setAuth({
-				isAuth: false,
-				authToken: null,
-				authUser: {},
-			});
+			logoutUser();
+			return toast.success("Logged out successfully!");
 		}
 		navigate("/login");
 	};
@@ -47,7 +48,9 @@ const Navbar = () => {
 							variant="h3"
 							sx={{ flexGrow: 1, ...logoText }}
 						>
-							<Link to="/">Q</Link>
+							<Link to={isAuth && authToken ? "/home" : "/"}>
+								Q
+							</Link>
 						</Typography>
 						<Box
 							sx={{
