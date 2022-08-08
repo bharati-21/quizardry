@@ -6,3 +6,4 @@ export { NotFound } from "./not-found";
 export { CategoryItems } from "./category-items";
 export { Rules } from "./rules";
 export { Quiz } from "./quiz";
+export { Results } from "./results";
