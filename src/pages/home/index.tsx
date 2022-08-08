@@ -23,7 +23,7 @@ const Home = () => {
 	};
 
 	const {
-		auth: { authToken },
+		authState: { authToken },
 	} = useAuth();
 	const [categories, setCategories] = useState<Categories>({
 		loading: true,

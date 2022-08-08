@@ -18,13 +18,14 @@ import { loginService } from "services";
 import toast from "react-hot-toast";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useAuth } from "contexts";
+import { authActionTypes } from "actionTypes";
 
 const Login = () => {
 	const { primaryLink, logoText } = useStyles();
 	const navigate = useNavigate();
 	const {
-		setAuth,
-		auth: { isAuth },
+		authDispatch,
+		authState: { isAuth },
 	} = useAuth();
 
 	useEffect(() => {
@@ -44,6 +45,7 @@ const Login = () => {
 	});
 
 	const [showPassword, setShowPassword] = useState(false);
+	const { SET_AUTH } = authActionTypes;
 
 	const callLoginService = async (formData: any) => {
 		try {
@@ -52,10 +54,14 @@ const Login = () => {
 					user: { token, ...otherUserDetails },
 				},
 			} = await loginService(formData);
-			setAuth({
-				authToken: token,
-				authUser: otherUserDetails,
-				isAuth: true,
+			console.log(otherUserDetails);
+			authDispatch({
+				type: SET_AUTH,
+				payload: {
+					authToken: token,
+					authUser: otherUserDetails,
+					isAuth: true,
+				},
 			});
 
 			localStorage.setItem("quizardry-auth-token", token);
@@ -221,7 +227,7 @@ const Login = () => {
 					<Button
 						type="submit"
 						fullWidth
-						variant="contained"
+						variant="outlined"
 						sx={{ mt: 1, mb: 2 }}
 						onClick={handleFillGuesDetails}
 					>

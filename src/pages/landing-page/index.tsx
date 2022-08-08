@@ -8,7 +8,7 @@ import { useAuth } from "contexts";
 const LandingPage = () => {
 	const { logoText } = useStyles();
 	const {
-		auth: { isAuth, authToken },
+		authState: { isAuth, authToken },
 	} = useAuth();
 	return (
 		<>

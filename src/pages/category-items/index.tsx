@@ -26,7 +26,7 @@ const CategoryItems = () => {
 
 	const { categoryId } = useParams();
 	const {
-		auth: { authToken },
+		authState: { authToken },
 	} = useAuth();
 	const { quizDispatch } = useQuiz();
 	const navigate = useNavigate();

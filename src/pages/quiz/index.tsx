@@ -14,7 +14,7 @@ const Quiz = () => {
 		quizState: { quizName, quizId, quizDataLoading, quizDataError },
 	} = useQuiz();
 	const {
-		auth: { authToken },
+		authState: { authToken },
 	} = useAuth();
 	const { quizId: paramQuizId } = useParams();
 	const navigate = useNavigate();

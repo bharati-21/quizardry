@@ -25,7 +25,7 @@ const Signup = () => {
 	const { primaryLink, logoText } = useStyles();
 	const navigate = useNavigate();
 	const {
-		auth: { isAuth },
+		authState: { isAuth },
 	} = useAuth();
 
 	const [formData, setFormData] = useState({

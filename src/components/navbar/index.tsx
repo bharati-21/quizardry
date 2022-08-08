@@ -20,7 +20,7 @@ const Navbar = () => {
 	const { logoText } = useStyles();
 	const { LIGHT } = constants;
 	const {
-		auth: { isAuth, authToken },
+		authState: { isAuth, authToken },
 		logoutUser,
 	} = useAuth();
 

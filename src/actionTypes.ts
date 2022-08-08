@@ -7,3 +7,8 @@ export const quizActionTypes = {
 	END_QUIZ: "END_QUIZ",
 	START_QUIZ: "START_QUIZ",
 };
+
+export const authActionTypes = {
+	SET_AUTH: "SET_AUTH",
+	RESET_AUTH: "RESET_AUTH",
+};
