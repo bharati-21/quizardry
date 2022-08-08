@@ -1,19 +1,37 @@
 import React from "react";
-import { useQuiz } from "contexts";
+import { useAuth, useQuiz } from "contexts";
 import { Box, FormControl, useTheme, Button } from "@mui/material";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
-import { quizActionTypes } from "actionTypes";
+import { authActionTypes, quizActionTypes } from "actionTypes";
 import { Options } from "../options";
 import { Question } from "../question";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { updateUserQuizAttempt } from "services";
+import { UserQuizAttempt } from "types";
 
 const QuizForm = () => {
 	const {
 		quizDispatch,
-		quizState: { currentQuestionNumber, questions, selectedOptions },
+		quizState: {
+			currentQuestionNumber,
+			questions,
+			selectedOptions,
+			quizId,
+			quizName,
+			category,
+		},
 	} = useQuiz();
+	const {
+		authState: {
+			authToken,
+			authUser: { userId },
+		},
+		authDispatch,
+	} = useAuth();
 	const theme = useTheme();
 	const navigate = useNavigate();
+	const { UPDATE_QUIZ_ATTEMPT } = authActionTypes;
 
 	const calculateScore = () => {
 		const { SET_SCORE } = quizActionTypes;
@@ -35,15 +53,43 @@ const QuizForm = () => {
 				score,
 			},
 		});
+		return score;
 	};
 
-	const handleChangeQuestion = (
+	const handleChangeQuestion = async (
 		e: React.MouseEvent<HTMLButtonElement>,
 		value: number
 	) => {
 		if (currentQuestionNumber === questions.length - 1 && value === 1) {
-			calculateScore();
-			return navigate("/results", { replace: true });
+			const totalScore = calculateScore();
+			const userQuizAttempt: UserQuizAttempt = {
+				quizId,
+				quizName,
+				totalScore,
+				category,
+				selectedOptions,
+			};
+			try {
+				const {
+					data: { updatedData },
+				} = await updateUserQuizAttempt(
+					authToken as string,
+					userId,
+					userQuizAttempt
+				);
+				authDispatch({
+					type: UPDATE_QUIZ_ATTEMPT,
+					payload: { ...updatedData },
+				});
+
+				return navigate("/results", { replace: true });
+			} catch (error) {
+				toast.error(
+					"Something went wrong. Could not update score. Please try again later."
+				);
+				navigate("/home", { replace: true });
+			}
+			return;
 		}
 		const { CHANGE_QUESTION_NUMBER } = quizActionTypes;
 
