@@ -37,6 +37,8 @@ export type QuizState = {
 	selectedOptions: any[];
 	currentQuestionNumber: number;
 	totalScore: number;
+	attemptingQuiz: boolean;
+	completedQuiz: boolean;
 };
 
 export type QuizContextType = {
