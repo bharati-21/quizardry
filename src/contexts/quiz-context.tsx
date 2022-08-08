@@ -1,21 +1,6 @@
 import { createContext, useContext, useReducer } from "react";
-import { quizReducerFunction } from "reducers/quiz-reducer";
-import { QuizState, QuizContextType, ContextProps } from "types";
-
-const initialState: QuizState = {
-	quizDataLoading: true,
-	quizDataError: null,
-	quizId: "",
-	quizName: "",
-	category: {
-		categoryId: "",
-		categoryName: "",
-	},
-	questions: [],
-	selectedOptions: new Array(10),
-	currentQuestionNumber: 0,
-	totalScore: 0,
-};
+import { quizReducerFunction, initialState } from "reducers/quiz-reducer";
+import { QuizContextType, ContextProps } from "types";
 
 const QuizContext = createContext<QuizContextType>({} as QuizContextType);
 
