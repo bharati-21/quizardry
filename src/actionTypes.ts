@@ -11,4 +11,5 @@ export const quizActionTypes = {
 export const authActionTypes = {
 	SET_AUTH: "SET_AUTH",
 	RESET_AUTH: "RESET_AUTH",
+	UPDATE_QUIZ_ATTEMPT: "UPDATE_QUIZ_ATTEMPT",
 };
