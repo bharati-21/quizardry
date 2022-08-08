@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { Option } from "./quiz/quiz.types";
 
 export interface ContextProps {
 	children?: ReactNode;
@@ -17,3 +18,16 @@ export type {
 	QuizState,
 	QuizContextType,
 } from "./quiz/quiz.types";
+
+export type QuestionContainerPropsType = {
+	question: string;
+	options: Option[];
+	index: number;
+};
+
+export type OptionsContainerPropsType = {
+	option: string;
+	_id: string;
+	isCorrect: boolean;
+	index: number;
+};

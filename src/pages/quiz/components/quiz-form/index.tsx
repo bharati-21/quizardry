@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { quizActionTypes } from "actionTypes";
 import { Options } from "../options";
 import { Question } from "../question";
+import { useNavigate } from "react-router-dom";
 
 const QuizForm = () => {
 	const {
@@ -12,6 +13,7 @@ const QuizForm = () => {
 		quizState: { currentQuestionNumber, questions, selectedOptions },
 	} = useQuiz();
 	const theme = useTheme();
+	const navigate = useNavigate();
 
 	const calculateScore = () => {
 		const { SET_SCORE } = quizActionTypes;
@@ -41,7 +43,7 @@ const QuizForm = () => {
 	) => {
 		if (currentQuestionNumber === questions.length - 1 && value === 1) {
 			calculateScore();
-			return;
+			return navigate("/results", { replace: true });
 		}
 		const { CHANGE_QUESTION_NUMBER } = quizActionTypes;
 
@@ -78,6 +80,7 @@ const QuizForm = () => {
 				}}
 			>
 				<Button
+					variant="outlined"
 					sx={{ fontWeight: "bold" }}
 					disabled={currentQuestionNumber === 0}
 					onClick={(e) => handleChangeQuestion(e, -1)}
@@ -85,7 +88,10 @@ const QuizForm = () => {
 					<ChevronLeft />
 					Prev
 				</Button>
-				<Button onClick={(e) => handleChangeQuestion(e, 1)}>
+				<Button
+					onClick={(e) => handleChangeQuestion(e, 1)}
+					variant="outlined"
+				>
 					<ChevronRight />
 					{currentQuestionNumber === questions.length - 1
 						? "Submit"

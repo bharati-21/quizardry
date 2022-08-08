@@ -20,7 +20,11 @@ const Quiz = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		if (paramQuizId !== quizId) {
+		// If there's no quiz id, then go back home
+		if (!quizId) {
+			navigate("/home", { replace: true });
+		} else if (paramQuizId !== quizId) {
+			// If the paramId is different from the quizId, then refetch the quiz data
 			(async () => {
 				const { SET_LOADING_ERROR, SET_QUESTION_DATA } = constants;
 				quizDispatch({

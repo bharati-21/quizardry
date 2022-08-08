@@ -12,7 +12,8 @@ import {
 import { constants } from "appConstants";
 import { useQuiz } from "contexts";
 import { ChevronRight } from "@mui/icons-material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { quizActionTypes } from "actionTypes";
 
 const Rules = () => {
 	const { RULES } = constants;
@@ -25,9 +26,11 @@ const Rules = () => {
 		},
 		quizDispatch,
 	} = useQuiz();
+	const navigate = useNavigate();
+	const { START_QUIZ } = quizActionTypes;
 
-	const mappedRules = RULES.map((rule: string) => (
-		<ListItem disableGutters alignItems="flex-start">
+	const mappedRules = RULES.map((rule: string, index: number) => (
+		<ListItem disableGutters alignItems="flex-start" key={index}>
 			<ListItemIcon sx={{ minWidth: "40px" }}>
 				<ChevronRight />
 			</ListItemIcon>
@@ -36,8 +39,12 @@ const Rules = () => {
 	));
 
 	useEffect(() => {
-		quizDispatch({ type: "RESET_QUIZ_STATE" });
-	}, [quizDispatch]);
+		if (!quizId || !quizName) navigate("/home", { replace: true });
+	}, [navigate, quizName, quizId]);
+
+	useEffect(() => {
+		quizDispatch({ type: START_QUIZ });
+	}, [quizDispatch, START_QUIZ]);
 
 	return (
 		<Box>

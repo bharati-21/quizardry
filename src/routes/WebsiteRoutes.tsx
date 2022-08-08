@@ -7,6 +7,7 @@ import {
 	CategoryItems,
 	Rules,
 	Quiz,
+	Results,
 } from "pages";
 import { Route, Routes } from "react-router-dom";
 import { NavRoutesWithNavbar } from "./NavRoutesWithNavbar";
@@ -25,6 +26,7 @@ const WebsiteRoutes = () => {
 					/>
 					<Route path="/rules" element={<Rules />} />
 					<Route path="/quizzes/:quizId" element={<Quiz />} />
+					<Route path="/results" element={<Results />} />
 				</Route>
 				<Route path="*" element={<NotFound />} />
 			</Route>

@@ -4,11 +4,29 @@ import { quizActionTypes } from "actionTypes";
 const {
 	SET_LOADING_ERROR,
 	SET_QUESTION_DATA,
-	RESET_QUIZ_STATE,
+	START_QUIZ,
+	END_QUIZ,
 	SET_SELECTED_OPTION,
 	CHANGE_QUESTION_NUMBER,
 	SET_SCORE,
 } = quizActionTypes;
+
+const initialState: QuizState = {
+	quizDataLoading: true,
+	quizDataError: null,
+	quizId: "",
+	quizName: "",
+	category: {
+		categoryId: "",
+		categoryName: "",
+	},
+	questions: [],
+	selectedOptions: new Array(10),
+	currentQuestionNumber: 0,
+	totalScore: 0,
+	attemptingQuiz: false,
+	completedQuiz: false,
+};
 
 const quizReducerFunction = (state: QuizState, action: QuizAction) => {
 	const { type, payload } = action;
@@ -23,15 +41,17 @@ const quizReducerFunction = (state: QuizState, action: QuizAction) => {
 		case SET_LOADING_ERROR:
 			return {
 				...state,
-				loading: payload.loading,
-				error: payload.error,
+				quizDataLoading: payload.quizDataLoading,
+				quizDataError: payload.quizDataError,
 			};
-		case RESET_QUIZ_STATE:
+		case START_QUIZ:
 			return {
 				...state,
 				selectedOptions: new Array(10),
 				currentQuestionNumber: 0,
 				totalScore: 0,
+				attemptingQuiz: true,
+				completedQuiz: false,
 			};
 		case SET_SELECTED_OPTION:
 			const updatedSelectedOptions = state.selectedOptions.slice();
@@ -51,8 +71,16 @@ const quizReducerFunction = (state: QuizState, action: QuizAction) => {
 			return {
 				...state,
 				totalScore: payload.score,
+				completedQuiz: true,
 			};
+		case END_QUIZ:
+			return {
+				...state,
+				...initialState,
+			};
+		default:
+			throw new Error("Invalid action type");
 	}
 };
 
-export { quizReducerFunction };
+export { quizReducerFunction, initialState };
