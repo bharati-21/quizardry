@@ -88,10 +88,13 @@ const Login = () => {
 			passwordError: "",
 		});
 
-		await callLoginService({
+		const formDataWithGuestCredentials = {
 			email: process.env.REACT_APP_GUEST_EMAIL || "",
 			password: process.env.REACT_APP_GUEST_PASSWORD || "",
-		});
+		};
+
+		callLoginService(formDataWithGuestCredentials);
+		setFormData(formDataWithGuestCredentials);
 	};
 
 	const handleFormDataChange = (event: React.ChangeEvent) => {
