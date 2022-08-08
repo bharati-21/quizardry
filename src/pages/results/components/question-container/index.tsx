@@ -87,6 +87,7 @@ const QuestionContainer: FC<QuestionContainerPropsType> = ({
 			>
 				{options.map(({ option, _id, isCorrect }) => (
 					<OptionsContainer
+						key={_id}
 						option={option}
 						_id={_id}
 						isCorrect={isCorrect}

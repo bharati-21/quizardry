@@ -22,6 +22,7 @@ export type {
 	SelectedOption,
 	QuizState,
 	QuizContextType,
+	UserQuizAttempt,
 } from "./quiz/quiz.types";
 
 export type QuestionContainerPropsType = {
