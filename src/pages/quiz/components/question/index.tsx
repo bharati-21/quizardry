@@ -14,7 +14,7 @@ const Question = () => {
 			id="question-text"
 			sx={{ fontSize: "1.25rem", fontWeight: "bold" }}
 		>
-			{selectedQuestion.question}
+			{`${currentQuestionNumber + 1}. ${selectedQuestion.question}`}
 		</FormLabel>
 	);
 };
