@@ -88,8 +88,9 @@ const Results = () => {
 						flexDirection: "column",
 					}}
 				>
-					{questions.map(({ question, options }, index) => (
+					{questions.map(({ question, options, _id }, index) => (
 						<QuestionContainer
+							key={_id}
 							question={question}
 							options={options}
 							index={index}
