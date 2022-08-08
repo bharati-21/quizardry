@@ -45,3 +45,11 @@ export type QuizContextType = {
 	quizState: QuizState;
 	quizDispatch: QuizDispatch;
 };
+
+export type UserQuizAttempt = {
+	quizId: string;
+	quizName: string;
+	category: Category;
+	selectedOptions: SelectedOption[];
+	totalScore: number;
+};
