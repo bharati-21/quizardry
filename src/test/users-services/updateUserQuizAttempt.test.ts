@@ -51,7 +51,7 @@ describe("Users service API call", () => {
 		it("Should call the correct service API", async () => {
 			await updateUserQuizAttempt(token, userId, requestBody);
 			expect(axios.post as jest.Mock).toBeCalledWith(
-				`http://localhost:5000/api/users/${userId}/quizAttempts`,
+				`https://quizardry-server.herokuapp.com/api/users/${userId}/quizAttempts`,
 				{
 					data: requestBody,
 				},

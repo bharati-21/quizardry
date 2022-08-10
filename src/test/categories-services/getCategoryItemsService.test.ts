@@ -33,7 +33,7 @@ describe("Categories service API call", () => {
 		it("Should call the correct API service", async () => {
 			await getCategoryItemsService(token, categoryId);
 			expect(axios.get).toBeCalledWith(
-				`http://localhost:5000/api/categories/${categoryId}`,
+				`https://quizardry-server.herokuapp.com/api/categories/${categoryId}`,
 				{ headers: { authorization: token } }
 			);
 		});

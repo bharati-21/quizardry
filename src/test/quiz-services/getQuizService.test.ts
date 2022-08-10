@@ -33,7 +33,7 @@ describe("Quiz service API call", () => {
 		it("Should call the correct API service", async () => {
 			await getQuizService(token, quizId);
 			expect(axios.get).toBeCalledWith(
-				`http://localhost:5000/api/quizzes/${quizId}`,
+				`https://quizardry-server.herokuapp.com/api/quizzes/${quizId}`,
 				{ headers: { authorization: token } }
 			);
 		});
