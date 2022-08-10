@@ -1,4 +1,4 @@
-import { uninterceptedAxiosInstance } from "axios/axios";
+import { uninterceptedAxiosInstance } from "unintercepted-axios/axios";
 
 type signupData = {
 	firstName: string;
