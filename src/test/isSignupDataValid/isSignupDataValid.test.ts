@@ -23,38 +23,44 @@ const {
 
 const { email, password, firstName, lastName } = validData;
 
-test("isSignupDataValid: should return false for data with invalid length", () => {
-	expect(
-		isSignupDataValid(
-			emailInvalidMinLen,
-			passwordInvalidMinLen,
-			setFormDataError,
-			firstNameInvalidMinLen,
-			lastNameInvalidMinLen
-		)
-	).toBeFalsy();
-});
+describe("isSignupDataValid util call", () => {
+	describe("Positive test", () => {
+		it("isSignupDataValid: should return true for data that is valid", () => {
+			expect(
+				isSignupDataValid(
+					email,
+					password,
+					setFormDataError,
+					firstName,
+					lastName
+				)
+			).toBeTruthy();
+		});
+	});
 
-test("isSignupDataValid: should return false for data with invalid pattern", () => {
-	expect(
-		isSignupDataValid(
-			emailInvalidPattern,
-			passwordInvalidPattern,
-			setFormDataError,
-			firstNameInvalidPattern,
-			lastNameInvalidPattern
-		)
-	).toBeFalsy();
-});
+	describe("Negative test", () => {
+		it("isSignupDataValid: should return false for data with invalid length", () => {
+			expect(
+				isSignupDataValid(
+					emailInvalidMinLen,
+					passwordInvalidMinLen,
+					setFormDataError,
+					firstNameInvalidMinLen,
+					lastNameInvalidMinLen
+				)
+			).toBeFalsy();
+		});
 
-test("isSignupDataValid: should return true for data that is valid", () => {
-	expect(
-		isSignupDataValid(
-			email,
-			password,
-			setFormDataError,
-			firstName,
-			lastName
-		)
-	).toBeTruthy();
+		it("isSignupDataValid: should return false for data with invalid pattern", () => {
+			expect(
+				isSignupDataValid(
+					emailInvalidPattern,
+					passwordInvalidPattern,
+					setFormDataError,
+					firstNameInvalidPattern,
+					lastNameInvalidPattern
+				)
+			).toBeFalsy();
+		});
+	});
 });
