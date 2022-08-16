@@ -5,4 +5,23 @@ const getQuizService = (token: string, quizId: string) =>
 		headers: { authorization: token },
 	});
 
-export { getQuizService };
+const postItemToQuizService = (token: string, quiz: any) =>
+	axios.post(
+		`https://quizardry-server.herokuapp.com/api/quizzes`,
+		{
+			quiz,
+		},
+		{
+			headers: { authorization: token },
+		}
+	);
+
+const deleteItemFromQuizService = (token: string, quizId: string) =>
+	axios.delete(
+		`https://quizardry-server.herokuapp.com/api/quizzes/${quizId}`,
+		{
+			headers: { authorization: token },
+		}
+	);
+
+export { getQuizService, postItemToQuizService, deleteItemFromQuizService };

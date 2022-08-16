@@ -13,3 +13,9 @@ export const authActionTypes = {
 	RESET_AUTH: "RESET_AUTH",
 	UPDATE_QUIZ_ATTEMPT: "UPDATE_QUIZ_ATTEMPT",
 };
+
+export const quizFormModalActionTypes = {
+	SET_MODAL_STATE: "SET_MODAL_STATE",
+	RESET_MODAL_STATE: "RESET_MODAL_STATE",
+	SET_REFETCH_QUIZ: "SET_REFETCH_QUIZ",
+};

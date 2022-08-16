@@ -5,7 +5,13 @@ import { BrowserRouter as Router } from "react-router-dom";
 import "./styles/index.css";
 import App from "./App";
 import { ToastPortal } from "ToastPortal";
-import { AuthProvider, QuizProvider, ThemeProvider } from "contexts";
+import {
+	AuthProvider,
+	QuizFormModalProvider,
+	QuizProvider,
+	ThemeProvider,
+} from "contexts";
+import { ModalPortal } from "ModalPortal";
 
 const root = ReactDOM.createRoot(
 	document.getElementById("root") as HTMLElement
@@ -16,8 +22,11 @@ root.render(
 			<ThemeProvider>
 				<AuthProvider>
 					<QuizProvider>
-						<App />
-						<ToastPortal />
+						<QuizFormModalProvider>
+							<App />
+							<ToastPortal />
+							<ModalPortal />
+						</QuizFormModalProvider>
 					</QuizProvider>
 				</AuthProvider>
 			</ThemeProvider>

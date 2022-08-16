@@ -54,7 +54,6 @@ const Login = () => {
 					user: { token, ...otherUserDetails },
 				},
 			} = await loginService(formData);
-			console.log(otherUserDetails);
 			authDispatch({
 				type: SET_AUTH,
 				payload: {
