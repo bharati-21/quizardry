@@ -3,5 +3,9 @@ export {
 	getCategoriesService,
 	getCategoryItemsService,
 } from "./categories-services/categories";
-export { getQuizService } from "./quiz-services/quiz";
+export {
+	getQuizService,
+	postItemToQuizService,
+	deleteItemFromQuizService,
+} from "./quiz-services/quiz";
 export { updateUserQuizAttempt } from "./users-services/users";
