@@ -37,3 +37,12 @@ export type OptionsContainerPropsType = {
 	isCorrect: boolean;
 	index: number;
 };
+
+export type {
+	QuizFormModalState,
+	QuizFormModalAction,
+	QuizFormModalDispatch,
+	QuizFormModalContextType,
+	ModalOption,
+	ModalQuestion,
+} from "./quiz-form-modal/quizFormModal.types";

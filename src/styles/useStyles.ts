@@ -23,6 +23,28 @@ const useStyles = () => {
 			fontFamily: "Raleway",
 			fontWeight: 700,
 		},
+		quizFormModalFormStyle: {
+			position: "absolute" as "absolute",
+			top: "50%",
+			left: "50%",
+			transform: "translate(-50%, -50%)",
+			maxWidth: "500px",
+			width: "100%",
+			bgcolor: "background.paper",
+			border: "2px solid #000",
+			boxShadow: 24,
+			py: 4,
+			px: 3,
+			maxHeight: "80vh",
+			height: "100%",
+			overflowY: "auto",
+		},
+		quizFormModalFormButtonStyles: {
+			fontSize: "0.85rem",
+			px: "10px",
+			py: "2px",
+			ml: "auto",
+		},
 	};
 };
 
