@@ -254,6 +254,7 @@ const CategoryItems = () => {
 									bgcolor: theme.palette.secondary.light,
 									color: theme.palette.secondary.contrastText,
 									padding: "0.75rem",
+									height: "100%!important",
 								}}
 							>
 								{quizImgUrl ? (
