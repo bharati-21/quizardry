@@ -1,4 +1,4 @@
-import { uninterceptedAxiosInstance } from "axios/axios";
+import { uninterceptedAxiosInstance } from "unintercepted-axios/axios";
 
 type signupData = {
 	firstName: string;
@@ -13,13 +13,16 @@ type loginData = {
 };
 
 const signupService = (data: signupData) =>
-	uninterceptedAxiosInstance.post("http://localhost:5000/api/auth/signup", {
+	uninterceptedAxiosInstance.post("https://quizardry-server.herokuapp.com/api/auth/signup", {
 		data,
 	});
 
 const loginService = (data: loginData) =>
-	uninterceptedAxiosInstance.post("http://localhost:5000/api/auth/login", {
-		data,
-	});
+	uninterceptedAxiosInstance.post(
+		"https://quizardry-server.herokuapp.com/api/auth/login",
+		{
+			data,
+		}
+	);
 
 export { signupService, loginService };
