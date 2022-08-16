@@ -78,6 +78,14 @@ const QuizFormModal = () => {
 			return;
 		}
 
+		const currentQuestionData = {
+			question,
+			options: options.map((option, index) => ({
+				option,
+				isCorrect: index === correctOption,
+			})),
+		};
+
 		if (questionNumber === 10) {
 			if (!quizName.trim()) {
 				toast.error("Please enter name of the quiz.");
@@ -86,7 +94,7 @@ const QuizFormModal = () => {
 
 			try {
 				await postItemToQuizService(authToken as string, {
-					questions: quizData,
+					questions: [...quizData, currentQuestionData],
 					creatorUserId: userId,
 					quizName,
 					category,
@@ -105,13 +113,7 @@ const QuizFormModal = () => {
 
 		setQuizData((prevQuizData: ModalQuestion[]) => [
 			...prevQuizData,
-			{
-				question,
-				options: options.map((option, index) => ({
-					option,
-					isCorrect: index === correctOption,
-				})),
-			},
+			currentQuestionData,
 		]);
 		setQuestion("");
 		setCorrectOption(0);
