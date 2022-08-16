@@ -91,6 +91,7 @@ UI consists of -
 - Material UI
 - TypeScript
 - React Router v6
+- Test using Jest
 - Backend with Node.js, Express.js, and MongoDB
   - [Code for backend](https://github.com/bharati-21/quizardry-server)
 
