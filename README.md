@@ -8,6 +8,9 @@
 </h1>
 <h3 align="center">
     A quiz app to test if you are a quiz wizard 🧙‍♂️ across categories such as books, TV shows, and songs.
+    <br />
+    <a href="https://github.com/bharati-21/quizardry-server">Backend Repository</a>
+
 </h3>
 
 <div align="center">
