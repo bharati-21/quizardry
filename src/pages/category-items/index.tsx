@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
 	Avatar,
 	Button,
+	IconButton,
 	ImageList,
 	ImageListItem,
 	ImageListItemBar,
@@ -10,12 +11,18 @@ import {
 	useTheme,
 } from "@mui/material/";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useAuth, useQuiz } from "contexts";
-import { getCategoryItemsService, getQuizService } from "services";
+import { useAuth, useQuiz, useQuizFormModal } from "contexts";
+import {
+	deleteItemFromQuizService,
+	getCategoryItemsService,
+	getQuizService,
+} from "services";
 import toast from "react-hot-toast";
 import loader from "images/loader.svg";
-import { quizActionTypes } from "actionTypes";
+import { quizActionTypes, quizFormModalActionTypes } from "actionTypes";
 import { constants } from "appConstants";
+import { Container } from "@mui/system";
+import { Delete } from "@mui/icons-material";
 
 const CategoryItems = () => {
 	type CategoryItems = {
@@ -26,12 +33,19 @@ const CategoryItems = () => {
 
 	const { categoryId } = useParams();
 	const {
-		authState: { authToken },
+		authState: {
+			authToken,
+			authUser: { userId },
+		},
 	} = useAuth();
 	const { quizDispatch } = useQuiz();
 	const navigate = useNavigate();
 	const theme = useTheme();
 	const { UNAUTHORIZED } = constants;
+	const {
+		quizFormModalDispatch,
+		quizFormModalState: { refetchQuiz },
+	} = useQuizFormModal();
 
 	const [categoryItems, setCategoryItems] = useState<CategoryItems>({
 		loading: true,
@@ -41,38 +55,58 @@ const CategoryItems = () => {
 
 	const { loading, items, error } = categoryItems;
 	const { SET_LOADING_ERROR, SET_QUESTION_DATA } = quizActionTypes;
+	const { SET_MODAL_STATE, RESET_MODAL_STATE } = quizFormModalActionTypes;
+
+	const fetchCategoryItems = useCallback(async () => {
+		try {
+			const {
+				data: { items },
+			} = await getCategoryItemsService(
+				authToken as string,
+				categoryId as string
+			);
+			setCategoryItems((prevCategoryItems) => ({
+				...prevCategoryItems,
+				loading: false,
+				items,
+				error: null,
+			}));
+		} catch (error: any) {
+			setCategoryItems((prevCategoryItems) => ({
+				...prevCategoryItems,
+				loading: false,
+				error: "Failed to fetch items for the selected category.",
+			}));
+
+			if (error.response.status === UNAUTHORIZED) {
+				return;
+			}
+
+			toast.error(
+				"Could not fetch items for the selected category. Please try again later."
+			);
+		}
+	}, [categoryId, authToken, UNAUTHORIZED]);
+
+	useEffect(() => {
+		if (refetchQuiz) {
+			fetchCategoryItems();
+			quizFormModalDispatch({
+				type: RESET_MODAL_STATE,
+			});
+		}
+	}, [
+		refetchQuiz,
+		fetchCategoryItems,
+		quizFormModalDispatch,
+		RESET_MODAL_STATE,
+	]);
 
 	useEffect(() => {
 		if (categoryId && authToken) {
-			(async () => {
-				try {
-					const {
-						data: { items },
-					} = await getCategoryItemsService(authToken, categoryId);
-					setCategoryItems((prevCategoryItems) => ({
-						...prevCategoryItems,
-						loading: false,
-						items,
-						error: null,
-					}));
-				} catch (error: any) {
-					setCategoryItems((prevCategoryItems) => ({
-						...prevCategoryItems,
-						loading: false,
-						error: "Failed to fetch items for the selected category.",
-					}));
-
-					if (error.response.status === UNAUTHORIZED) {
-						return;
-					}
-
-					toast.error(
-						"Could not fetch items for the selected category. Please try again later."
-					);
-				}
-			})();
+			fetchCategoryItems();
 		}
-	}, [categoryId, authToken, UNAUTHORIZED]);
+	}, [categoryId, authToken, fetchCategoryItems]);
 
 	const matchDownMd = useMediaQuery(theme.breakpoints.down("sm"));
 	const matchDownLg = useMediaQuery(theme.breakpoints.down("md"));
@@ -122,6 +156,47 @@ const CategoryItems = () => {
 		}
 	};
 
+	const handleCreateNewQuizClicked = () => {
+		quizFormModalDispatch({
+			type: SET_MODAL_STATE,
+			payload: {
+				category: {
+					categoryId,
+					categoryName: items[0].category.categoryName,
+				},
+				modalIsOpen: true,
+			},
+		});
+	};
+
+	const handleDeleteQuiz = async (quizId: string) => {
+		const confirmation = window.confirm(
+			"Are you sure you want to delete this quiz?"
+		);
+		if (!confirmation) {
+			return;
+		}
+		setCategoryItems((prevCategoryItems) => ({
+			...prevCategoryItems,
+			loading: true,
+		}));
+		try {
+			const {
+				data: { quizzes },
+			} = await deleteItemFromQuizService(authToken as string, quizId);
+			setCategoryItems((prevCategoryItems) => ({
+				...prevCategoryItems,
+				loading: false,
+				items: quizzes.filter(
+					(quiz: any) => quiz.category.categoryId === categoryId
+				),
+			}));
+			toast.success("Deleted quiz successfully!");
+		} catch (error) {
+			toast.error("Failed to delete quiz. Please try again later.");
+		}
+	};
+
 	return (
 		<>
 			{loading ? (
@@ -137,80 +212,119 @@ const CategoryItems = () => {
 						width: "100%",
 						height: "100%",
 						placeItems: "center",
+						gap: "1rem !important",
 					}}
 					cols={matchDownMd ? 1 : matchDownLg ? 2 : 3}
 					className="category-list"
 				>
-					<Button
-						variant="contained"
-						sx={{ gridColumn: "1/ -1", mb: 2, placeSelf: "start" }}
+					<Container
+						sx={{
+							gridColumn: "1/ -1",
+							mb: 2,
+							placeSelf: "start",
+							width: "100%",
+							p: "0 !important",
+							display: "flex",
+							flexWrap: "wrap",
+							justifyContent: "space-between",
+							alignItems: "center",
+							gap: 0.5,
+						}}
 					>
-						<Link to="/home" className="button-link">
-							Go Back
-						</Link>
-					</Button>
-					{items.map(({ _id, quizName, quizImgUrl }) => (
-						<ImageListItem
-							key={_id}
-							className="category-list-item"
-							sx={{
-								width: "100%",
-								gap: "1rem",
-								bgcolor: theme.palette.secondary.light,
-								color: theme.palette.secondary.contrastText,
-								padding: "0.75rem",
-							}}
+						<Button variant="outlined" sx={{ fontWeight: "bold" }}>
+							<Link to="/home" className="button-link">
+								Go Back
+							</Link>
+						</Button>
+						<Button
+							variant="contained"
+							onClick={handleCreateNewQuizClicked}
 						>
-							{quizImgUrl ? (
-								<img
-									src={`${quizImgUrl}`}
-									alt={quizName}
-									loading="lazy"
-								/>
-							) : (
-								<Avatar
-									sx={{
-										bgcolor: theme.palette.secondary.light,
-										color: theme.palette.secondary
-											.contrastText,
-										width: "100%",
-										height: "12rem",
-										fontWeight: 700,
-										fontSize: "4rem",
-									}}
-									variant="square"
-								>
-									{getAvatarText(quizName)}
-								</Avatar>
-							)}
-							<ImageListItemBar
-								title={quizName}
-								position="below"
+							Create New Quiz
+						</Button>
+					</Container>
+					{items.map(
+						({ _id, quizName, quizImgUrl, creatorUserId }) => (
+							<ImageListItem
+								key={_id}
+								className="category-list-item"
 								sx={{
 									width: "100%",
-									px: 0,
-									pt: 1,
-									alignItems: "flex-start",
-									gap: "0.5rem",
-									flexWrap: "wrap",
-									fontweight: "bold",
-									bgColor: "inherit",
-									borderTop: `1px solid ${theme.palette.dark.main}`,
+									gap: "1rem",
+									bgcolor: theme.palette.secondary.light,
+									color: theme.palette.secondary.contrastText,
+									padding: "0.75rem",
 								}}
-								actionIcon={
-									<Button
-										variant="contained"
+							>
+								{quizImgUrl ? (
+									<img
+										src={`${quizImgUrl}`}
+										alt={quizName}
+										loading="lazy"
+									/>
+								) : (
+									<Avatar
 										sx={{
-											borderRadius: "0",
+											bgcolor:
+												theme.palette.secondary.light,
+											color: theme.palette.secondary
+												.contrastText,
+											width: "100%",
+											height: "12rem",
+											fontWeight: 700,
+											fontSize: "4rem",
 										}}
-										onClick={() => handleQuizSelected(_id)}
+										variant="square"
 									>
-										Take Quiz
-									</Button>
-								}
-							/>
-						</ImageListItem>
-					))}
+										{creatorUserId === userId ? (
+											<IconButton
+												onClick={() =>
+													handleDeleteQuiz(_id)
+												}
+												sx={{
+													position: "absolute",
+													top: "0.25rem",
+													right: "0.25rem",
+													padding: "0 !important",
+												}}
+											>
+												<Delete />
+											</IconButton>
+										) : null}
+										{getAvatarText(quizName)}
+									</Avatar>
+								)}
+								<ImageListItemBar
+									title={quizName}
+									position="below"
+									sx={{
+										width: "100%",
+										px: 0,
+										pt: 1,
+										alignItems: "flex-start",
+										gap: "0.5rem",
+										flexWrap: "wrap",
+										fontweight: "bold",
+										bgColor: "inherit",
+										borderTop: `1px solid ${theme.palette.dark.main}`,
+									}}
+									actionIcon={
+										<Button
+											variant="contained"
+											sx={{
+												borderRadius: "0",
+											}}
+											onClick={() =>
+												handleQuizSelected(_id)
+											}
+										>
+											Take Quiz
+										</Button>
+									}
+								/>
+							</ImageListItem>
+						)
+					)}
 				</ImageList>
 			) : (
 				<Typography variant="h4">
