@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAuth, useQuiz } from "contexts";
 import { Box, FormControl, useTheme, Button } from "@mui/material";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
@@ -32,6 +32,8 @@ const QuizForm = () => {
 	const theme = useTheme();
 	const navigate = useNavigate();
 	const { UPDATE_QUIZ_ATTEMPT } = authActionTypes;
+
+	const [isOngoingNetworkCall, setIsOngoingNetworkCall] = useState(false);
 
 	const calculateScore = () => {
 		const { SET_SCORE } = quizActionTypes;
@@ -69,6 +71,7 @@ const QuizForm = () => {
 				category,
 				selectedOptions,
 			};
+			setIsOngoingNetworkCall(true);
 			try {
 				const {
 					data: { updatedData },
@@ -137,6 +140,7 @@ const QuizForm = () => {
 				<Button
 					onClick={(e) => handleChangeQuestion(e, 1)}
 					variant="outlined"
+					disabled={isOngoingNetworkCall}
 				>
 					<ChevronRight />
 					{currentQuestionNumber === questions.length - 1

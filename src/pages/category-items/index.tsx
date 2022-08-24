@@ -52,6 +52,7 @@ const CategoryItems = () => {
 		items: [],
 		error: null,
 	});
+	const [isOngoingNetworkCall, setIsOngoingNetworkCall] = useState(false);
 
 	const { loading, items, error } = categoryItems;
 	const { SET_LOADING_ERROR, SET_QUESTION_DATA } = quizActionTypes;
@@ -176,6 +177,7 @@ const CategoryItems = () => {
 		if (!confirmation) {
 			return;
 		}
+		setIsOngoingNetworkCall(true);
 		setCategoryItems((prevCategoryItems) => ({
 			...prevCategoryItems,
 			loading: true,
@@ -193,6 +195,7 @@ const CategoryItems = () => {
 			}));
 			toast.success("Deleted quiz successfully!");
 		} catch (error) {
+			setIsOngoingNetworkCall(false);
 			toast.error("Failed to delete quiz. Please try again later.");
 		}
 	};
@@ -288,6 +291,7 @@ const CategoryItems = () => {
 													right: "0.25rem",
 													padding: "0 !important",
 												}}
+												disabled={isOngoingNetworkCall}
 											>
 												<Delete />
 											</IconButton>

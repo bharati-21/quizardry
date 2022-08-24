@@ -47,3 +47,8 @@ input[name="question-option-radio-group"],
 .MuiRadio-root.MuiRadio-root {
 	display: none;
 }
+
+.disabled-link {
+	pointer-events: none;
+	color: #ccc;
+}

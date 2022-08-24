@@ -42,6 +42,7 @@ const QuizFormModal = () => {
 	const [question, setQuestion] = useState("");
 	const [options, setOptions] = useState<string[]>(new Array(4).fill(""));
 	const [correctOption, setCorrectOption] = useState<number>(0);
+	const [isOngoingNetworkCall, setIsOngoingNetworkCall] = useState(false);
 
 	const handleClose = () =>
 		quizFormModalDispatch({
@@ -91,7 +92,7 @@ const QuizFormModal = () => {
 				toast.error("Please enter name of the quiz.");
 				return;
 			}
-
+			setIsOngoingNetworkCall(true);
 			try {
 				await postItemToQuizService(authToken as string, {
 					questions: [...quizData, currentQuestionData],
@@ -102,6 +103,7 @@ const QuizFormModal = () => {
 				handleClose();
 				toast.success("Created and posted new quiz successfully!");
 			} catch (error) {
+				setIsOngoingNetworkCall(false);
 				toast.error(
 					"Could not create new quiz and post to server. Please try again later."
 				);
@@ -265,6 +267,7 @@ const QuizFormModal = () => {
 						<Button
 							variant="outlined"
 							type="submit"
+							disabled={isOngoingNetworkCall}
 							sx={quizFormModalFormButtonStyles}
 							onClick={handleChangeQuestion}
 						>

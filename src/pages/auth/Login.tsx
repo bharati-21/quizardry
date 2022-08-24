@@ -9,6 +9,7 @@ import {
 	Container,
 	InputAdornment,
 	IconButton,
+	Backdrop,
 } from "@mui/material";
 import { Link, To, useNavigate } from "react-router-dom";
 
@@ -19,6 +20,7 @@ import toast from "react-hot-toast";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useAuth } from "contexts";
 import { authActionTypes } from "actionTypes";
+import loader from "images/loader.svg";
 
 const Login = () => {
 	const { primaryLink, logoText } = useStyles();
@@ -45,9 +47,11 @@ const Login = () => {
 	});
 
 	const [showPassword, setShowPassword] = useState(false);
+	const [isOngoingNetworkCall, setIsOngoingNetworkCall] = useState(false);
 	const { SET_AUTH } = authActionTypes;
 
 	const callLoginService = async (formData: any) => {
+		setIsOngoingNetworkCall(true);
 		try {
 			const {
 				data: {
@@ -72,6 +76,7 @@ const Login = () => {
 			toast.success("Login successful!");
 			navigate("/home", { replace: true });
 		} catch (error: any) {
+			setIsOngoingNetworkCall(false);
 			toast.error("Login failed. Please try again later.");
 		}
 	};
@@ -122,128 +127,164 @@ const Login = () => {
 		setShowPassword((prevShowPassword) => !prevShowPassword);
 
 	const isDisabled =
-		!email || !password || emailError !== "" || passwordError !== "";
+		!email ||
+		!password ||
+		emailError !== "" ||
+		passwordError !== "" ||
+		isOngoingNetworkCall;
 
 	return (
-		<Container
-			component="main"
-			sx={{
-				height: "100vh",
-				display: "flex",
-				flexDirection: "column",
-				alignItems: "center",
-				justifyContent: "center",
-			}}
-			maxWidth="xs"
-		>
-			<CssBaseline />
-			<Box
+		<>
+			<Backdrop
 				sx={{
-					isplay: "flex",
+					color: "#fff",
+					zIndex: (theme) => theme.zIndex.drawer + 1,
+				}}
+				open={isOngoingNetworkCall}
+			>
+				<img
+					src={loader}
+					alt="Loading..."
+					style={{
+						width: "100px",
+						height: "100px",
+					}}
+				/>
+			</Backdrop>
+			<Container
+				component="main"
+				sx={{
+					height: "100vh",
+					display: "flex",
 					flexDirection: "column",
 					alignItems: "center",
-					padding: 3,
-					borderRadius: "2px",
-					boxShadow: `0 0 5px rgba(0, 0, 0, 0.2)`,
+					justifyContent: "center",
 				}}
+				maxWidth="xs"
 			>
-				<Typography
-					variant="h5"
+				<CssBaseline />
+				<Box
 					sx={{
-						flexGrow: 1,
-						...logoText,
-						textAlign: "center",
-						marginBottom: "1rem",
+						isplay: "flex",
+						flexDirection: "column",
+						alignItems: "center",
+						padding: 3,
+						borderRadius: "2px",
+						boxShadow: `0 0 5px rgba(0, 0, 0, 0.2)`,
 					}}
 				>
-					<Link to="/">Quizardry</Link>
-				</Typography>
-				<Typography
-					component="h1"
-					sx={{
-						textAlign: "center",
-					}}
-					variant="h5"
-				>
-					Login
-				</Typography>
-				<Box component="form" noValidate sx={{ mt: 1 }}>
-					<TextField
-						error={emailError !== ""}
-						helperText={emailError}
-						margin="normal"
-						required
-						fullWidth
-						type="email"
-						id="email"
-						label="Email Address"
-						name="email"
-						autoComplete="email"
-						autoFocus
-						value={email}
-						onChange={handleFormDataChange}
-					/>
-					<TextField
-						error={passwordError !== ""}
-						helperText={passwordError}
-						margin="normal"
-						required
-						fullWidth
-						name="password"
-						label="Password"
-						type={showPassword ? "text" : "password"}
-						id="password"
-						autoComplete="current-password"
-						value={password}
-						onChange={handleFormDataChange}
-						InputProps={{
-							endAdornment: (
-								<InputAdornment position="end">
-									<IconButton
-										aria-label="toggle password visibility"
-										onClick={togglePasswordVisibility}
-									>
-										{showPassword ? (
-											<Visibility />
-										) : (
-											<VisibilityOff />
-										)}
-									</IconButton>
-								</InputAdornment>
-							),
+					<Typography
+						variant="h5"
+						sx={{
+							flexGrow: 1,
+							...logoText,
+							textAlign: "center",
+							marginBottom: "1rem",
 						}}
-					/>
-					<Button
-						type="submit"
-						fullWidth
-						variant="contained"
-						sx={{ mt: 3 }}
-						onClick={handleSubmit}
-						disabled={isDisabled}
+					>
+						<Link to="/">Quizardry</Link>
+					</Typography>
+					<Typography
+						component="h1"
+						sx={{
+							textAlign: "center",
+						}}
+						variant="h5"
 					>
 						Login
-					</Button>
-					<Button
-						type="submit"
-						fullWidth
-						variant="outlined"
-						sx={{ mt: 1, mb: 2 }}
-						onClick={handleFillGuesDetails}
-					>
-						Login with Guest Credentials
-					</Button>
-					<Grid container justifyContent="flex-end">
-						<Grid item>
-							<Link to="/signup">
-								<Typography variant="body2" sx={primaryLink}>
-									New User? Signup
-								</Typography>
-							</Link>
+					</Typography>
+					<Box component="form" noValidate sx={{ mt: 1 }}>
+						<TextField
+							error={emailError !== ""}
+							helperText={emailError}
+							margin="normal"
+							required
+							fullWidth
+							type="email"
+							id="email"
+							label="Email Address"
+							name="email"
+							autoComplete="email"
+							autoFocus
+							value={email}
+							disabled={isOngoingNetworkCall}
+							onChange={handleFormDataChange}
+						/>
+						<TextField
+							error={passwordError !== ""}
+							helperText={passwordError}
+							margin="normal"
+							required
+							fullWidth
+							name="password"
+							label="Password"
+							type={showPassword ? "text" : "password"}
+							id="password"
+							autoComplete="current-password"
+							value={password}
+							onChange={handleFormDataChange}
+							disabled={isOngoingNetworkCall}
+							InputProps={{
+								endAdornment: (
+									<InputAdornment position="end">
+										<IconButton
+											aria-label="toggle password visibility"
+											onClick={togglePasswordVisibility}
+											disabled={isOngoingNetworkCall}
+										>
+											{showPassword ? (
+												<Visibility />
+											) : (
+												<VisibilityOff />
+											)}
+										</IconButton>
+									</InputAdornment>
+								),
+							}}
+						/>
+						<Button
+							type="submit"
+							fullWidth
+							variant="contained"
+							sx={{ mt: 3 }}
+							onClick={handleSubmit}
+							disabled={isDisabled}
+						>
+							Login
+						</Button>
+						<Button
+							type="submit"
+							fullWidth
+							variant="outlined"
+							sx={{ mt: 1, mb: 2 }}
+							disabled={isOngoingNetworkCall}
+							onClick={handleFillGuesDetails}
+						>
+							Login with Guest Credentials
+						</Button>
+						<Grid container justifyContent="flex-end">
+							<Grid item>
+								<Link
+									to="/signup"
+									className={
+										isOngoingNetworkCall
+											? "disabled-link"
+											: ""
+									}
+								>
+									<Typography
+										variant="body2"
+										sx={primaryLink}
+									>
+										New User? Signup
+									</Typography>
+								</Link>
+							</Grid>
 						</Grid>
-					</Grid>
+					</Box>
 				</Box>
-			</Box>
-		</Container>
+			</Container>
+		</>
 	);
 };
 
