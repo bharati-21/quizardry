@@ -38,7 +38,7 @@ describe("Signup service API calls", () => {
 		it("Should call endpoint with given email & password", async () => {
 			await signupService(userSignupData);
 			expect(uninterceptedAxiosInstance.post).toBeCalledWith(
-				"https://quizardry-server.herokuapp.com/api/auth/signup",
+				`${process.env.REACT_APP_API_URL}/api/auth/signup`,
 				{ data: userSignupData }
 			);
 		});

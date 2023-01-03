@@ -13,13 +13,16 @@ type loginData = {
 };
 
 const signupService = (data: signupData) =>
-	uninterceptedAxiosInstance.post("https://quizardry-server.herokuapp.com/api/auth/signup", {
-		data,
-	});
+	uninterceptedAxiosInstance.post(
+		`${process.env.REACT_APP_API_URL}/api/auth/signup`,
+		{
+			data,
+		}
+	);
 
 const loginService = (data: loginData) =>
 	uninterceptedAxiosInstance.post(
-		"https://quizardry-server.herokuapp.com/api/auth/login",
+		`${process.env.REACT_APP_API_URL}/api/auth/login`,
 		{
 			data,
 		}

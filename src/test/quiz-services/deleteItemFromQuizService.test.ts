@@ -30,7 +30,7 @@ describe("Delete quiz item service API call", () => {
 		it("Should call the correct API service", async () => {
 			await deleteItemFromQuizService(token, quizId);
 			expect(axios.delete).toBeCalledWith(
-				`https://quizardry-server.herokuapp.com/api/quizzes/${quizId}`,
+				`${process.env.REACT_APP_API_URL}/api/quizzes/${quizId}`,
 				{ headers: { authorization: token } }
 			);
 		});

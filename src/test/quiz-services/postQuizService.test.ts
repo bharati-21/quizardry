@@ -32,7 +32,7 @@ describe("Post new quiz item service API call", () => {
 		it("Should call the correct API service", async () => {
 			await postItemToQuizService(token, item);
 			expect(axios.post).toBeCalledWith(
-				`https://quizardry-server.herokuapp.com/api/quizzes`,
+				`${process.env.REACT_APP_API_URL}/api/quizzes`,
 				{ quiz: item },
 				{ headers: { authorization: token } }
 			);

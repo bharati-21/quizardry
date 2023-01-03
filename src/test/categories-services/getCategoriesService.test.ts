@@ -37,7 +37,7 @@ describe("Categories service API call", () => {
 		it("Should call the correct API service", async () => {
 			await getCategoriesService(token);
 			expect(axios.get).toBeCalledWith(
-				"https://quizardry-server.herokuapp.com/api/categories",
+				`${process.env.REACT_APP_API_URL}/api/categories`,
 				{
 					headers: {
 						authorization: token,
