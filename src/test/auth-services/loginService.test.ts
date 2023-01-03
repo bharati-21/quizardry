@@ -32,7 +32,7 @@ describe("Login service API call", () => {
 		it("Should call endpoint with given email & password", async () => {
 			await loginService({ email, password });
 			expect(uninterceptedAxiosInstance.post).toBeCalledWith(
-				"https://quizardry-server.herokuapp.com/api/auth/login",
+				`${process.env.REACT_APP_API_URL}/api/auth/login`,
 				{ data: { email, password } }
 			);
 		});

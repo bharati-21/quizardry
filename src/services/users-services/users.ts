@@ -7,7 +7,7 @@ const updateUserQuizAttempt = (
 	userQuizAttempt: UserQuizAttempt
 ) =>
 	axios.post(
-		`https://quizardry-server.herokuapp.com/api/users/${userId}/quizAttempts`,
+		`${process.env.REACT_APP_API_URL}/api/users/${userId}/quizAttempts`,
 		{ data: userQuizAttempt },
 		{
 			headers: { authorization: token },
